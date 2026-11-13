@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE MAGNET — Game Concept Document</title>
+<style>
+  :root{
+    --bg:#0b0e14; --panel:#121722; --panel2:#171d2a; --line:#232c3e;
+    --txt:#e6edf7; --mut:#8b96ab; --dim:#6b7688;
+    --teal:#4ecdc4; --red:#ff4757; --gold:#ffd166; --purple:#9b5de5;
+    --pink:#ff6ec7; --blue:#4ea8de; --grey:#7a8699;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--txt);line-height:1.6;
+    font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 26px 100px}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:sticky;top:0;z-index:50;background:rgba(11,14,20,.92);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  nav .inner{
+    max-width:1180px;margin:0 auto;padding:12px 26px;display:flex;gap:20px;
+    align-items:center;overflow-x:auto;white-space:nowrap;
+  }
+  nav b{font-size:13px;letter-spacing:2px;color:var(--red)}
+  nav a{
+    color:var(--mut);text-decoration:none;font-size:13px;font-weight:600;
+    padding:4px 0;border-bottom:2px solid transparent;transition:.15s;
+  }
+  nav a:hover{color:var(--txt);border-bottom-color:var(--red)}
+
+  /* ---------- hero ---------- */
+  .hero{padding:70px 0 46px;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+  .hero .kicker{
+    font-size:12px;letter-spacing:4px;color:var(--red);font-weight:700;margin-bottom:18px;
+  }
+  h1{
+    font-size:clamp(42px,6vw,74px);line-height:.95;margin:0 0 22px;
+    letter-spacing:-2px;font-weight:800;
+  }
+  h1 span{
+    background:linear-gradient(100deg,#ff4757,#ff6ec7 45%,#ffd166);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .lede{font-size:20px;color:var(--mut);max-width:760px;margin:0 0 28px}
+  .lede b{color:var(--txt);font-weight:600}
+  .facts{display:flex;flex-wrap:wrap;gap:10px}
+  .fact{
+    border:1px solid var(--line);background:var(--panel);border-radius:999px;
+    padding:7px 16px;font-size:12.5px;color:var(--mut);
+  }
+  .fact b{color:var(--txt);font-weight:700}
+
+  /* ---------- sections ---------- */
+  section{padding:66px 0 0;scroll-margin-top:64px}
+  .sec-head{display:flex;align-items:flex-start;gap:18px;margin-bottom:26px}
+  .num{
+    font-size:46px;font-weight:800;line-height:1;color:transparent;
+    -webkit-text-stroke:1.5px var(--line);flex:none;margin-top:2px;
+  }
+  h2{font-size:30px;margin:0 0 6px;letter-spacing:-.5px}
+  .sub{color:var(--mut);font-size:15px;margin:0}
+  h3{font-size:17px;margin:0 0 10px;letter-spacing:.2px}
+  p{color:#c3ccdb;margin:0 0 14px}
+  p.small{font-size:13.5px;color:var(--mut)}
+
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;
+  }
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+  .g4{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+
+  /* ---------- tables ---------- */
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{
+    text-align:left;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--dim);font-weight:700;padding:0 12px 10px;border-bottom:1px solid var(--line);
+  }
+  td{padding:12px;border-bottom:1px solid #1a2130;color:#cdd6e4;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td.mono{font-variant-numeric:tabular-nums;font-weight:700;color:var(--txt)}
+  .tag{
+    display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;
+    border:1px solid currentColor;
+  }
+
+  /* ---------- callouts ---------- */
+  .note{
+    border-left:3px solid var(--gold);background:#171408;border-radius:0 12px 12px 0;
+    padding:16px 20px;margin:20px 0;font-size:14.5px;color:#e8dcb8;
+  }
+  .note b{color:var(--gold)}
+  .warn{
+    border-left:3px solid var(--red);background:#160d10;border-radius:0 12px 12px 0;
+    padding:16px 20px;margin:20px 0;font-size:14.5px;color:#f0c9cf;
+  }
+  .warn b{color:var(--red)}
+  .ok{
+    border-left:3px solid var(--teal);background:#0c1616;border-radius:0 12px 12px 0;
+    padding:16px 20px;margin:20px 0;font-size:14.5px;color:#c6ecea;
+  }
+  .ok b{color:var(--teal)}
+
+  /* ---------- misc ---------- */
+  ul.clean{list-style:none;padding:0;margin:0}
+  ul.clean li{
+    position:relative;padding-left:20px;margin-bottom:9px;font-size:14.5px;color:#c3ccdb;
+  }
+  ul.clean li::before{
+    content:"";position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;
+    background:var(--teal);
+  }
+  .kv{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid #1a2130;font-size:14px}
+  .kv:last-child{border-bottom:none}
+  .kv span:first-child{color:var(--mut)}
+  .kv span:last-child{font-weight:700;font-variant-numeric:tabular-nums}
+  .big{font-size:34px;font-weight:800;letter-spacing:-1px;line-height:1.1}
+  .cap{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);font-weight:700}
+  svg{display:block;width:100%;height:auto}
+  .step{
+    display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid #1a2130;
+  }
+  .step:last-child{border-bottom:none}
+  .step .n{
+    flex:none;width:28px;height:28px;border-radius:50%;background:var(--panel2);
+    border:1.5px solid var(--line);display:grid;place-items:center;
+    font-size:12px;font-weight:800;color:var(--mut);
+  }
+  .step .body{font-size:14px;color:#c3ccdb}
+  .step .body b{color:var(--txt)}
+  footer{margin-top:70px;padding-top:26px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
+</style>
+</head>
+<body>
+
+<nav><div class="inner">
+  <b>THE MAGNET</b>
+  <a href="#loop">Loop</a>
+  <a href="#map">Map</a>
+  <a href="#loot">Loot</a>
+  <a href="#monster">The Monster</a>
+  <a href="#defence">Defence</a>
+  <a href="#shop">Shop</a>
+  <a href="#relics">Relics</a>
+  <a href="#world">World Relic</a>
+  <a href="#hooks">Why it hooks</a>
+  <a href="#economy">Economy</a>
+  <a href="#build">Build plan</a>
+</div></nav>
+
+<div class="wrap">
+
+  <!-- ================= HERO ================= -->
+  <header class="hero">
+    <div class="kicker">ROBLOX GAME CONCEPT · v1</div>
+    <h1>THE <span>MAGNET</span></h1>
+    <p class="lede">
+      Loot spawns on a <b>magnetic floor</b>. One player is the Magnet — a walking gravity well that
+      drags everyone toward the bottom of the bowl. <b>You can't outrun it. You can only decide what
+      you're willing to throw away.</b>
+    </p>
+    <div class="facts">
+      <div class="fact"><b>8–12</b> players / server</div>
+      <div class="fact"><b>3 min</b> rounds</div>
+      <div class="fact"><b>1</b> Magnet per round</div>
+      <div class="fact"><b>5</b> loot tiers</div>
+      <div class="fact"><b>6</b> retention engines</div>
+      <div class="fact">Roblox · low-poly</div>
+    </div>
+  </header>
+
+  <!-- ================= 1 · LOOP ================= -->
+  <section id="loop">
+    <div class="sec-head">
+      <div class="num">01</div>
+      <div>
+        <h2>The loop, in one picture</h2>
+        <p class="sub">Three loops stacked inside each other — a 3-minute loop, a 30-minute loop, a multi-day loop.</p>
+      </div>
+    </div>
+
+    <div class="card" style="padding:18px">
+      <svg viewBox="0 0 1100 320" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="h1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#8b96ab"/>
+          </marker>
+          <marker id="h2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#ffd166"/>
+          </marker>
+        </defs>
+
+        <g>
+          <rect x="30" y="60" width="150" height="78" rx="12" fill="#171d2a" stroke="#2b3448"/>
+          <text x="105" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#e6edf7">DIVE IN</text>
+          <text x="105" y="112" text-anchor="middle" font-size="10.5" fill="#8b96ab">bowl = best loot</text>
+
+          <rect x="230" y="60" width="150" height="78" rx="12" fill="#171d2a" stroke="#2b3448"/>
+          <text x="305" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#e6edf7">GRAB &amp; STACK</text>
+          <text x="305" y="112" text-anchor="middle" font-size="10.5" fill="#8b96ab">you get slower</text>
+
+          <rect x="430" y="60" width="150" height="78" rx="12" fill="#1f1013" stroke="#ff4757"/>
+          <text x="505" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#ff4757">GET CHASED</text>
+          <text x="505" y="112" text-anchor="middle" font-size="10.5" fill="#8b96ab">the pull follows you</text>
+
+          <rect x="630" y="60" width="150" height="78" rx="12" fill="#1a2233" stroke="#ffd166"/>
+          <text x="705" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#ffd166">DECIDE</text>
+          <text x="705" y="112" text-anchor="middle" font-size="10.5" fill="#8b96ab">drop it or keep it?</text>
+
+          <rect x="830" y="60" width="150" height="78" rx="12" fill="#0c1c1c" stroke="#4ecdc4"/>
+          <text x="905" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#4ecdc4">BANK IT</text>
+          <text x="905" y="112" text-anchor="middle" font-size="10.5" fill="#8b96ab">vault, 1.5 sec</text>
+        </g>
+
+        <line x1="184" y1="99" x2="222" y2="99" stroke="#8b96ab" stroke-width="2" marker-end="url(#h1)"/>
+        <line x1="384" y1="99" x2="422" y2="99" stroke="#8b96ab" stroke-width="2" marker-end="url(#h1)"/>
+        <line x1="584" y1="99" x2="622" y2="99" stroke="#8b96ab" stroke-width="2" marker-end="url(#h1)"/>
+        <line x1="784" y1="99" x2="822" y2="99" stroke="#8b96ab" stroke-width="2" marker-end="url(#h1)"/>
+
+        <path d="M905,142 L905,196 L105,196 L105,144" fill="none" stroke="#ffd166" stroke-width="1.8"
+              stroke-dasharray="6 5" marker-end="url(#h2)"/>
+        <text x="505" y="188" text-anchor="middle" font-size="12" font-weight="700" fill="#ffd166">
+          3 minutes · then the coins become tools, and you go deeper
+        </text>
+
+        <line x1="30" y1="238" x2="1070" y2="238" stroke="#232c3e"/>
+
+        <text x="30" y="268" font-size="12" font-weight="700" fill="#4ecdc4">3 MIN</text>
+        <text x="88" y="268" font-size="12" fill="#8b96ab">the round — risk only what's in your hands</text>
+
+        <text x="30" y="296" font-size="12" font-weight="700" fill="#ffd166">30 MIN</text>
+        <text x="98" y="296" font-size="12" fill="#8b96ab">the session — spend coins, carry more, survive deeper</text>
+
+        <text x="30" y="318" font-size="12" font-weight="700" fill="#ff6ec7">DAYS</text>
+        <text x="88" y="318" font-size="12" fill="#8b96ab">the base — relics earn offline, sets complete, seasons reset</text>
+      </svg>
+    </div>
+
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card">
+        <div class="cap" style="color:var(--teal)">THE ROUND</div>
+        <p class="small" style="margin-top:8px">Dive, loot, deposit, 3 minutes. Die and you lose only what you're holding. Instant restart — no punishment.</p>
+      </div>
+      <div class="card">
+        <div class="cap" style="color:var(--gold)">THE SESSION</div>
+        <p class="small" style="margin-top:8px">Coins buy tools and jackets. Better gear = deeper runs = rarer loot. A visible power curve every 20 minutes.</p>
+      </div>
+      <div class="card">
+        <div class="cap" style="color:var(--pink)">THE BASE</div>
+        <p class="small" style="margin-top:8px">Relics on shelves print coins while you're offline. Come back richer than you left. That's the daily habit.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 2 · MAP ================= -->
+  <section id="map">
+    <div class="sec-head">
+      <div class="num">02</div>
+      <div>
+        <h2>The map: a crater, not a tower</h2>
+        <p class="sub">Height = safety. Depth = money. The Magnet lives at the lowest point.</p>
+      </div>
+    </div>
+
+    <div class="card" style="padding:18px">
+      <svg viewBox="0 0 1100 380" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="mg" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="7" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <marker id="m1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#8b96ab"/>
+          </marker>
+          <marker id="m2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#ff4757"/>
+          </marker>
+        </defs>
+
+        <path d="M60,150 L230,150 L380,285 L720,285 L870,150 L1040,150 L1040,350 L60,350 Z" fill="#151c2b"/>
+        <path d="M60,150 L230,150 L380,285 L720,285 L870,150 L1040,150"
+              fill="none" stroke="#3a455e" stroke-width="3"/>
+
+        <rect x="130" y="120" width="30" height="30" rx="7" fill="#1b2233" stroke="#ffd166" stroke-width="1.6"/>
+        <text x="145" y="141" text-anchor="middle" font-size="15" font-weight="700" fill="#ffd166">$</text>
+        <text x="112" y="110" font-size="10.5" font-weight="700" fill="#4ecdc4">RIM · VAULTS</text>
+
+        <rect x="930" y="120" width="30" height="30" rx="7" fill="#1b2233" stroke="#ffd166" stroke-width="1.6"/>
+        <text x="945" y="141" text-anchor="middle" font-size="15" font-weight="700" fill="#ffd166">$</text>
+
+        <circle cx="550" cy="268" r="70" fill="none" stroke="#ffa502" stroke-width="1.4" stroke-dasharray="2 8" opacity=".55"/>
+        <circle cx="550" cy="268" r="42" fill="none" stroke="#ff4757" stroke-width="1.8" stroke-dasharray="6 5" opacity=".85"/>
+        <circle cx="550" cy="268" r="16" fill="#ff4757" filter="url(#mg)"/>
+        <circle cx="550" cy="268" r="6" fill="#0b0e14"/>
+
+        <circle cx="330" cy="215" r="6" fill="#4ecdc4"/>
+        <rect x="322" y="200" width="16" height="5" fill="#ffd166"/>
+        <rect x="322" y="193" width="16" height="5" fill="#9b5de5"/>
+        <path d="M344,222 C 400,250 450,262 500,266" fill="none" stroke="#ff4757" stroke-width="2" marker-end="url(#m2)"/>
+
+        <circle cx="800" cy="200" r="6" fill="#4ecdc4"/>
+        <path d="M392,258 L504,248" fill="none" stroke="#ff4757" stroke-width="1.6" marker-end="url(#m2)" opacity=".6"/>
+        <path d="M762,238 L700,258" fill="none" stroke="#ff4757" stroke-width="1.6" marker-end="url(#m2)" opacity=".6"/>
+
+        <path d="M360,175 L330,205" fill="none" stroke="#8b96ab" stroke-width="2.5" marker-end="url(#m1)"/>
+        <text x="300" y="168" font-size="10.5" fill="#8b96ab">climb out</text>
+
+        <text x="380" y="316" font-size="10.5" letter-spacing="2" fill="#6b7688">RAMP · CHOKE POINT</text>
+        <text x="600" y="316" font-size="10.5" letter-spacing="2" fill="#6b7688">BOWL</text>
+        <text x="60" y="372" font-size="11.5" fill="#8b96ab">
+          Every step down is a visible risk · the climb back out is the panic moment
+        </text>
+      </svg>
+    </div>
+
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card"><h3 style="color:var(--teal)">Rim</h3><p class="small">3 vaults. The only safe ground. Where you bank and where the World Relic must be dragged.</p></div>
+      <div class="card"><h3 style="color:var(--gold)">Terraces</h3><p class="small">Mid-tier loot. Pillars block the Lash (not the pull) — the cover you use.</p></div>
+      <div class="card"><h3 style="color:var(--red)">Bowl</h3><p class="small">Best loot in the game, and the lowest point. The Magnet spawns here and owns it.</p></div>
+    </div>
+
+    <div class="note">
+      <b>Why not a vertical tower?</b> The pull is distance-based — three floors up makes "how close am I?"
+      meaningless, and gravity plus pull creates physics chaos. A crater keeps height as a readable danger
+      gradient while staying one continuous arena.
+    </div>
+  </section>
+
+  <!-- ================= 3 · LOOT ================= -->
+  <section id="loot">
+    <div class="sec-head">
+      <div class="num">03</div>
+      <div>
+        <h2>What spawns on the magnetic floor</h2>
+        <p class="sub">Five tiers. The rarer it is, the closer it spawns to the Magnet.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <table>
+        <thead><tr><th>Tier</th><th>Value</th><th>Where it spawns</th><th>How often</th><th>Feel</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="tag" style="color:var(--grey)">SCRAP</span></td>
+            <td class="mono">10</td><td>Rim + terraces</td><td>very common</td><td>filler, keeps the floor alive</td>
+          </tr>
+          <tr>
+            <td><span class="tag" style="color:var(--blue)">CORE</span></td>
+            <td class="mono">50</td><td>All rings</td><td>common</td><td>the bread and butter</td>
+          </tr>
+          <tr>
+            <td><span class="tag" style="color:var(--purple)">CHARGED</span></td>
+            <td class="mono">250</td><td>Terraces, near ramps</td><td>uncommon</td><td>worth the extra risk</td>
+          </tr>
+          <tr>
+            <td><span class="tag" style="color:var(--gold)">PRIME</span></td>
+            <td class="mono">1,200</td><td>Bowl edge</td><td>rare</td><td>glows so everyone sees it</td>
+          </tr>
+          <tr>
+            <td><span class="tag" style="color:var(--pink)">ANOMALY</span></td>
+            <td class="mono">6,000</td><td>Bowl floor only</td><td>1%</td><td>screenshot moment</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <h3>The magnetic floor rule</h3>
+        <p class="small">
+          Loot doesn't just sit there. Anything left on the ground <b style="color:var(--txt)">slowly drifts
+          downhill toward the Magnet</b>, and the Magnet <b style="color:var(--txt)">eats it</b> when it arrives.
+        </p>
+        <p class="small">
+          Three consequences, all good: the floor is never cluttered, players can't farm one safe pile forever,
+          and there's a visible timer on greed — that Prime over there is sliding away right now.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Carrying it</h3>
+        <div class="kv"><span>Hand slots</span><span>6 (upgradable to 10)</span></div>
+        <div class="kv"><span>Weight penalty</span><span>−3% speed per item</span></div>
+        <div class="kv"><span>Visibility</span><span>stacks on your back, seen from afar</span></div>
+        <div class="kv"><span>On death</span><span>everything in hands is gone</span></div>
+        <p class="small" style="margin-top:14px">
+          There is no coin on the floor and no money in your hands. Loot is a physical object you can lose.
+          <b style="color:var(--gold)">Coins only exist after you deposit.</b>
+        </p>
+      </div>
+    </div>
+
+    <div class="warn">
+      <b>The core tension:</b> the danger ring is 35 studs when you're empty-handed and <b>55 studs when you're
+      loaded</b>. A spot that was safe on the way in becomes a death trap on the way out. That single widening
+      circle is the entire game.
+    </div>
+  </section>
+
+  <!-- ================= 4 · MONSTER ================= -->
+  <section id="monster">
+    <div class="sec-head">
+      <div class="num">04</div>
+      <div>
+        <h2>The Magnet</h2>
+        <p class="sub">Whoever earned the most last round becomes the monster. Winning is the reward.</p>
+      </div>
+    </div>
+
+    <div class="grid g2">
+      <div class="card">
+        <h3>Base kit</h3>
+        <div class="kv"><span>Walk speed</span><span>8 (players: 16)</span></div>
+        <div class="kv"><span>Catch radius</span><span>6 studs</span></div>
+        <div class="kv"><span>Passive aura</span><span>radial pull, ignores walls</span></div>
+        <div class="kv"><span>Income</span><span>catches + flat 300 / round</span></div>
+        <div class="kv"><span>Can bank loot?</span><span>no — separate scoring path</span></div>
+      </div>
+      <div class="card">
+        <h3>Abilities</h3>
+        <div class="kv"><span>Pulse · 8s</span><span>3× pull for 0.4s + stagger</span></div>
+        <div class="kv"><span>Lash · 6s</span><span>hook one target, reel 2s (LOS only)</span></div>
+        <div class="kv"><span>Field Flip · 12s</span><span>repel for 2s — shove people</span></div>
+        <div class="kv"><span>Eat</span><span>1.5s animation, then 3s digest</span></div>
+        <p class="small" style="margin-top:12px">
+          Digest halves the pull for 3 seconds. One player can never eat the whole lobby — the monster has downtime.
+        </p>
+      </div>
+    </div>
+
+    <div class="ok" style="margin-top:16px">
+      <b>Role rotation is the retention trick.</b> Nobody is stuck as the prey. Everyone gets to be the monster,
+      because the top earner of the round is the one cursed with it next round.
+    </div>
+  </section>
+
+  <!-- ================= 5 · DEFENCE ================= -->
+  <section id="defence">
+    <div class="sec-head">
+      <div class="num">05</div>
+      <div>
+        <h2>Defending against the pull</h2>
+        <p class="sub">Four layers. Skill first, money last, and nothing is ever immunity.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <table>
+        <thead><tr><th>Layer</th><th>What it is</th><th>Cost</th><th>Limit</th></tr></thead>
+        <tbody>
+          <tr><td><b>1 · Skill</b></td><td>Sprint sideways around the ring, bank early, <b>drop loot</b></td><td class="mono" style="color:var(--teal)">free</td><td>always works</td></tr>
+          <tr><td><b>2 · Dash</b></td><td>6s cooldown burst — dodge the Pulse</td><td class="mono" style="color:var(--teal)">free</td><td>timing-based</td></tr>
+          <tr><td><b>3 · Tools</b></td><td>Consumables bought before a round</td><td class="mono" style="color:var(--gold)">200–800</td><td>used up even if you die</td></tr>
+          <tr><td><b>4 · Jacket</b></td><td>Permanent pull resistance</td><td class="mono" style="color:var(--gold)">2k → 300k</td><td>caps at 35%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note" style="margin-top:16px">
+      <b>The rule that keeps it a game:</b> money buys you <b>mistakes</b>, never <b>safety</b>. Every jacket still
+      dies if it stands still inside the ring — the best suit just buys you 4.5 seconds instead of 1.2.
+    </div>
+  </section>
+
+  <!-- ================= 6 · SHOP ================= -->
+  <section id="shop">
+    <div class="sec-head">
+      <div class="num">06</div>
+      <div>
+        <h2>The shop — what coins actually buy</h2>
+        <p class="sub">Three shelves: consumables every round, jackets once, permanent upgrades forever.</p>
+      </div>
+    </div>
+
+    <div class="grid g2">
+      <div class="card">
+        <div class="cap" style="color:var(--gold)">SHELF 1 · TOOLS (per round)</div>
+        <table style="margin-top:12px">
+          <tbody>
+            <tr><td><b style="color:var(--gold)">Anchor</b><br><span class="small">pinned 3s, immune to pull, can't move</span></td><td class="mono">200</td></tr>
+            <tr><td><b style="color:var(--gold)">Grapple</b><br><span class="small">30-stud dash away from the Magnet</span></td><td class="mono">500</td></tr>
+            <tr><td><b style="color:var(--gold)">Decoy</b><br><span class="small">the pull targets a fake you for 4s</span></td><td class="mono">800</td></tr>
+          </tbody>
+        </table>
+        <p class="small" style="margin-top:10px">Consumed on use, even on death. This is the main coin sink.</p>
+      </div>
+
+      <div class="card">
+        <div class="cap" style="color:var(--purple)">SHELF 2 · JACKETS (permanent)</div>
+        <table style="margin-top:12px">
+          <thead><tr><th>Jacket</th><th>Grip</th><th>Ring</th><th>Cost</th></tr></thead>
+          <tbody>
+            <tr><td>Rags</td><td>0%</td><td>35</td><td class="mono" style="color:var(--teal)">free</td></tr>
+            <tr><td>Padded <span class="small">(−2% spd)</span></td><td>8%</td><td>32</td><td class="mono">2,000</td></tr>
+            <tr><td>Rigger <span class="small">(−4% spd)</span></td><td>15%</td><td>29</td><td class="mono">12,000</td></tr>
+            <tr><td>Exo <span class="small">(−7% spd)</span></td><td>24%</td><td>25</td><td class="mono">60,000</td></tr>
+            <tr><td>Anomaly <span class="small">(−10% spd)</span></td><td>35%</td><td>22</td><td class="mono">300,000</td></tr>
+          </tbody>
+        </table>
+        <p class="small" style="margin-top:10px">Heavier = stickier but slower. Power always costs something.</p>
+      </div>
+
+      <div class="card">
+        <div class="cap" style="color:var(--teal)">SHELF 3 · UPGRADES (permanent)</div>
+        <table style="margin-top:12px">
+          <tbody>
+            <tr><td>+1 carry slot <span class="small">(6 → 10)</span></td><td class="mono">5k / 25k / 100k</td></tr>
+            <tr><td>Dash cooldown −1s</td><td class="mono">15,000</td></tr>
+            <tr><td>Faster deposit (1.5s → 1.0s)</td><td class="mono">10,000</td></tr>
+            <tr><td>+1 vault pedestal <span class="small">(8 → 20)</span></td><td class="mono">3,000 ea</td></tr>
+            <tr><td>Heat multiplier +0.1</td><td class="mono">20,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="cap" style="color:var(--pink)">NOT FOR SALE — EVER</div>
+        <ul class="clean" style="margin-top:12px">
+          <li>Pull resistance beyond the 35% cap</li>
+          <li>Extra tool charges at the same price</li>
+          <li>Relic drop rate</li>
+          <li>Vault safety — the vault is always safe for everyone</li>
+        </ul>
+        <p class="small" style="margin-top:6px">
+          The moment money buys safety, the Magnet stops being scary and the game dies.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 7 · RELICS ================= -->
+  <section id="relics">
+    <div class="sec-head">
+      <div class="num">07</div>
+      <div>
+        <h2>Relics — the thing you actually collect</h2>
+        <p class="sub">A relic is a pet with a new picture: rarity, a coins-per-second number, and a set tag.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <svg viewBox="0 0 1100 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="r1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#8b96ab"/>
+          </marker>
+          <filter id="rg" x="-70%" y="-70%" width="240%" height="240%">
+            <feGaussianBlur stdDeviation="6" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <rect x="20" y="40" width="180" height="66" rx="10" fill="#171d2a" stroke="#2b3448"/>
+        <text x="110" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#e6edf7">LOOT IN HANDS</text>
+        <text x="110" y="88" text-anchor="middle" font-size="10.5" fill="#8b96ab">no relic yet</text>
+
+        <line x1="204" y1="73" x2="252" y2="73" stroke="#8b96ab" stroke-width="2" marker-end="url(#r1)"/>
+
+        <rect x="256" y="40" width="180" height="66" rx="10" fill="#1f1a10" stroke="#ffa502"/>
+        <text x="346" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#ffa502">DEPOSIT · ROLL</text>
+        <text x="346" y="88" text-anchor="middle" font-size="10.5" fill="#8b96ab">1 in 4 drops a relic</text>
+
+        <line x1="440" y1="73" x2="488" y2="73" stroke="#8b96ab" stroke-width="2" marker-end="url(#r1)"/>
+
+        <rect x="492" y="40" width="180" height="66" rx="10" fill="#1a1f2e" stroke="#9b5de5"/>
+        <text x="582" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#9b5de5">ON YOUR SHELF</text>
+        <text x="582" y="88" text-anchor="middle" font-size="10.5" fill="#8b96ab">in your base, not the arena</text>
+
+        <line x1="676" y1="73" x2="724" y2="73" stroke="#8b96ab" stroke-width="2" marker-end="url(#r1)"/>
+
+        <rect x="728" y="40" width="180" height="66" rx="10" fill="#0c1c1c" stroke="#4ecdc4"/>
+        <text x="818" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#4ecdc4">COINS / SEC</text>
+        <text x="818" y="88" text-anchor="middle" font-size="10.5" fill="#8b96ab">pays you while offline</text>
+
+        <polygon points="966,58 998,82 966,110 934,82" fill="#ff6ec7" filter="url(#rg)"/>
+        <text x="1040" y="70" font-size="11" font-weight="700" fill="#e6edf7">+2.0 / sec</text>
+        <text x="1040" y="90" font-size="10.5" fill="#8b96ab">Rare · Core Set 2/5</text>
+
+        <text x="20" y="150" font-size="12" fill="#8b96ab">
+          Relics never drop on the map and can never be stolen. Once banked, they are yours forever.
+        </text>
+        <text x="20" y="176" font-size="12" fill="#8b96ab">
+          This is the “hatch” from Steal an Egg — the slot-machine moment, just renamed.
+        </text>
+      </svg>
+    </div>
+
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <h3>Relic income tiers</h3>
+        <div class="kv"><span>Common</span><span style="color:var(--grey)">0.2 / sec</span></div>
+        <div class="kv"><span>Uncommon</span><span style="color:var(--teal)">0.5 / sec</span></div>
+        <div class="kv"><span>Rare</span><span style="color:var(--blue)">2 / sec</span></div>
+        <div class="kv"><span>Epic</span><span style="color:var(--purple)">5 / sec</span></div>
+        <div class="kv"><span>Mythic</span><span style="color:var(--gold)">15 / sec</span></div>
+        <div class="kv"><span>World Relic</span><span style="color:var(--pink)">40 / sec</span></div>
+      </div>
+      <div class="card">
+        <h3>The museum</h3>
+        <ul class="clean">
+          <li>Your base is a <b style="color:var(--txt)">separate map</b> from the arena.</li>
+          <li>Each pedestal holds one relic — 3D, glowing, slowly spinning.</li>
+          <li><b style="color:var(--txt)">Any player can walk in and look</b> — that's the flex.</li>
+          <li>Offline income ticks on this shelf, capped at 8 hours.</li>
+          <li>Set bonus: 5 of a kind → ×1.25. Full page → ×2.0.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 8 · WORLD RELIC ================= -->
+  <section id="world">
+    <div class="sec-head">
+      <div class="num">08</div>
+      <div>
+        <h2>The World Relic — the mid-round event</h2>
+        <p class="sub">Every 3rd round, a car-sized relic spawns in the bowl. You cannot pick it up.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="step"><div class="n">1</div><div class="body"><b>It spawns loudly</b> at 90 seconds — announcement, map marker, audio cue. Everybody knows.</div></div>
+      <div class="step"><div class="n">2</div><div class="body"><b>Grab a rope (E).</b> 1 carrier = 8% speed · 2 = 30% · 4 = 60%. It's a team object.</div></div>
+      <div class="step"><div class="n">3</div><div class="body"><b>Everyone on a rope is 25% slower and can be eaten.</b> Getting caught snaps your rope off.</div></div>
+      <div class="step"><div class="n">4</div><div class="body"><b>The Magnet can claim it too</b> — touch it for 3 seconds and it's absorbed forever, with a permanent curse tier.</div></div>
+      <div class="step"><div class="n">5</div><div class="body"><b>Bank it at a rim vault (1.5s).</b> Everyone on a rope gets 25,000 coins + a Haul Seal (Epic, +8/sec).</div></div>
+      <div class="step"><div class="n">6</div><div class="body"><b>The MVP</b> — most seconds on the rope — keeps the World Relic itself: Mythic, +40/sec, plus their name on the Hall of Fame board.</div></div>
+    </div>
+
+    <div class="warn">
+      <b>The MVP rule is deliberate.</b> Four people pulling the same rock, each secretly wanting the most time on
+      it. Free drama on top of the chase. And if the round ends first, it despawns and <b>nobody wins</b> — that's
+      the "so close" moment that makes them queue again.
+    </div>
+  </section>
+
+  <!-- ================= 9 · HOOKS ================= -->
+  <section id="hooks">
+    <div class="sec-head">
+      <div class="num">09</div>
+      <div>
+        <h2>Why it hooks players</h2>
+        <p class="sub">Six engines running at once. This is the answer to "why do they come back tomorrow?"</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <svg viewBox="0 0 1100 330" xmlns="http://www.w3.org/2000/svg">
+        <g font-size="12" font-weight="700" fill="#e6edf7">
+          <text x="20" y="34">1 · LOSS AVERSION</text>
+          <text x="20" y="82">2 · VARIABLE REWARD</text>
+          <text x="20" y="130">3 · IDLE INCOME</text>
+          <text x="20" y="178">4 · COLLECTION</text>
+          <text x="20" y="226">5 · SOCIAL STATUS</text>
+          <text x="20" y="274">6 · ROLE ROTATION</text>
+        </g>
+        <g fill="#8b96ab" font-size="11.5">
+          <text x="230" y="34">the loot on your back can be taken — the oldest hook in games</text>
+          <text x="230" y="82">the deposit roll: 1 in 4, can't be predicted, can't be bought</text>
+          <text x="230" y="130">shelves print coins while you sleep — leaving never punishes you</text>
+          <text x="230" y="178">sets, pedestals, completion bars — the "one more" itch</text>
+          <text x="230" y="226">visit my base · biggest haul board · Hall of Fame</text>
+          <text x="230" y="274">the top earner becomes the monster — everyone gets a turn</text>
+        </g>
+        <g>
+          <rect x="20" y="42" width="1060" height="4" rx="2" fill="#232c3e"/><rect x="20" y="42" width="1010" height="4" rx="2" fill="#ff4757"/>
+          <rect x="20" y="90" width="1060" height="4" rx="2" fill="#232c3e"/><rect x="20" y="90" width="900" height="4" rx="2" fill="#ffd166"/>
+          <rect x="20" y="138" width="1060" height="4" rx="2" fill="#232c3e"/><rect x="20" y="138" width="940" height="4" rx="2" fill="#4ecdc4"/>
+          <rect x="20" y="186" width="1060" height="4" rx="2" fill="#232c3e"/><rect x="20" y="186" width="860" height="4" rx="2" fill="#9b5de5"/>
+          <rect x="20" y="234" width="1060" height="4" rx="2" fill="#232c3e"/><rect x="20" y="234" width="820" height="4" rx="2" fill="#ff6ec7"/>
+          <rect x="20" y="282" width="1060" height="4" rx="2" fill="#232c3e"/><rect x="20" y="282" width="880" height="4" rx="2" fill="#4ea8de"/>
+        </g>
+        <text x="20" y="320" font-size="11" fill="#6b7688">Bars = how hard each engine pulls. Steal an Egg uses 4 of these. The Magnet runs all 6.</text>
+      </svg>
+    </div>
+
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <div class="cap">THE COMPARISON</div>
+        <table style="margin-top:12px">
+          <thead><tr><th>Steal an Egg</th><th>The Magnet</th></tr></thead>
+          <tbody>
+            <tr><td>Egg on the ground</td><td>Loot on the magnetic floor</td></tr>
+            <tr><td>Rare eggs, rarer spawns</td><td>Rare loot only inside the pull ring</td></tr>
+            <tr><td>Hatch → random pet</td><td>Deposit → random relic</td></tr>
+            <tr><td>Pet earns coins/sec</td><td>Relic earns coins/sec</td></tr>
+            <tr><td>AFK farming</td><td>Offline shelf income (capped)</td></tr>
+            <tr><td>Speed stat → better eggs</td><td>Grip stat → deeper, rarer runs</td></tr>
+            <tr><td>"My pet is rarer"</td><td>"My relic is bigger — visit my base"</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="cap" style="color:var(--red)">THE ONE DIFFERENCE</div>
+        <p class="small" style="margin-top:12px">
+          In Steal an Egg, <b style="color:var(--txt)">nothing can ever be taken from you</b>. It is calm, safe,
+          and idle. Retention is enormous; excitement is near zero.
+        </p>
+        <p class="small">
+          In The Magnet, <b style="color:var(--red)">another player can empty your hands</b>. Same gacha, same idle
+          layer, same collection — plus a heart rate.
+        </p>
+        <p class="small">
+          That's the entire bet: <b style="color:var(--gold)">take the reward structure of an idle game and put a
+          monster in the middle of it.</b>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 10 · ECONOMY ================= -->
+  <section id="economy">
+    <div class="sec-head">
+      <div class="num">10</div>
+      <div>
+        <h2>The economy</h2>
+        <p class="sub">Active play must always beat idling — otherwise it stops being a game.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <svg viewBox="0 0 1100 190" xmlns="http://www.w3.org/2000/svg">
+        <text x="20" y="40" font-size="12" font-weight="700" fill="#4ecdc4">1 HOUR OF PLAYING</text>
+        <rect x="200" y="26" width="700" height="20" rx="10" fill="#0f2b2b"/>
+        <rect x="200" y="26" width="700" height="20" rx="10" fill="#4ecdc4" opacity=".85"/>
+        <text x="920" y="42" font-size="13" font-weight="800" fill="#4ecdc4">80,000 coins</text>
+
+        <text x="20" y="80" font-size="12" font-weight="700" fill="#ffd166">8 HOURS OFFLINE</text>
+        <rect x="200" y="66" width="700" height="20" rx="10" fill="#2b2410"/>
+        <rect x="200" y="66" width="403" height="20" rx="10" fill="#ffd166" opacity=".85"/>
+        <text x="623" y="82" font-size="13" font-weight="800" fill="#ffd166">46,000 coins</text>
+
+        <text x="20" y="126" font-size="12" font-weight="700" fill="#9b5de5">SET BONUS</text>
+        <text x="200" y="126" font-size="12" fill="#8b96ab">5 of a kind → ×1.25 on everything · full page → ×2.0</text>
+
+        <text x="20" y="164" font-size="12" fill="#8b96ab">Playing ≈ 10× better per hour. Idle is a welcome-back gift, never a substitute.</text>
+      </svg>
+    </div>
+
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card">
+        <div class="cap" style="color:var(--teal)">WHERE COINS COME FROM</div>
+        <ul class="clean" style="margin-top:10px">
+          <li>Depositing loot (active)</li>
+          <li>Shelf reliquaries (idle)</li>
+          <li>Set bonuses (collection)</li>
+          <li>World Relic payouts (event)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="cap" style="color:var(--red)">WHERE THEY LEAVE</div>
+        <ul class="clean" style="margin-top:10px">
+          <li>Tools — consumed even on death</li>
+          <li>Jackets and permanent upgrades</li>
+          <li>Vault pedestals</li>
+          <li>Cosmetics</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="cap" style="color:var(--gold)">WHY IT DOESN'T INFLATE</div>
+        <ul class="clean" style="margin-top:10px">
+          <li>Death costs the round's earnings</li>
+          <li>Consumables burn on use</li>
+          <li>Idle is capped at 8 hours</li>
+          <li>Relic income is capped by shelf slots</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ok">
+      <b>The single most important number:</b> the danger ring. 35 studs empty-handed, 55 studs while loaded.
+      Every other value in this document is tuning. That one is the game.
+    </div>
+  </section>
+
+  <!-- ================= 11 · BUILD ================= -->
+  <section id="build">
+    <div class="sec-head">
+      <div class="num">11</div>
+      <div>
+        <h2>Build plan</h2>
+        <p class="sub">Playable in two weekends. Test the greed before you test the art.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <table>
+        <thead><tr><th style="width:60px">Step</th><th>What you build</th><th style="width:150px">Time</th><th style="width:220px">Why it's this early</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1</td><td>Greybox crater + 1 vault + touch-to-pickup + weight penalty</td><td>3h</td><td>you need something to walk on</td></tr>
+          <tr><td class="mono">2</td><td><b>Pull aura + visible danger ring</b></td><td>6h</td><td><b style="color:var(--gold)">this is the whole game — build it first</b></td></tr>
+          <tr><td class="mono">3</td><td>Deposit channel + coins</td><td>3h</td><td>closes the loop</td></tr>
+          <tr><td class="mono">4</td><td>Round manager + role rotation + scoreboard</td><td>5h</td><td>makes it a game, not a sandbox</td></tr>
+          <tr><td class="mono">5</td><td>Pulse / Lash / Field Flip</td><td>6h</td><td>the monster needs teeth</td></tr>
+          <tr><td class="mono">6</td><td>Drop-loot physics + Magnet eats loot</td><td>4h</td><td>the escape decision</td></tr>
+          <tr><td class="mono">7</td><td>Relic roll + shelf + offline income</td><td>8h</td><td>the reason they return</td></tr>
+          <tr><td class="mono">8</td><td>Shop: tools, jackets, upgrades</td><td>6h</td><td>gives coins a purpose</td></tr>
+          <tr><td class="mono">9</td><td>World Relic drag event</td><td>10h</td><td>the clip machine — do it last</td></tr>
+          <tr><td class="mono">10</td><td>Polish, kill cam, Hall of Fame, seasons</td><td>—</td><td>after the loop is proven</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <b>Stop at step 4 and playtest with 4 friends.</b> If nobody ever drops loot, the weight penalty is too low.
+      If nobody ever complains about the pull, it's too weak. That one dial decides whether the design lives.
+    </div>
+  </section>
+
+  <!-- ================= 12 · TUNING ================= -->
+  <section id="tuning">
+    <div class="sec-head">
+      <div class="num">12</div>
+      <div>
+        <h2>Tuning knobs</h2>
+        <p class="sub">Everything you'll want to change after the first playtest.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <table>
+        <thead><tr><th>If it feels…</th><th>Turn this</th></tr></thead>
+        <tbody>
+          <tr><td>Too easy to escape</td><td>Raise pull strength <b>k</b>, or cut sprint stamina</td></tr>
+          <tr><td>Hopeless inside the ring</td><td>Raise player counter-force, or shrink the ring to 25 studs</td></tr>
+          <tr><td>Nobody drops loot</td><td><b style="color:var(--gold)">Increase the weight penalty per item</b> — the most important dial</td></tr>
+          <tr><td>Nobody risks deep runs</td><td>Raise the heat multiplier</td></tr>
+          <tr><td>Magnet camps the vaults</td><td>Cut Magnet speed in the outer ring to 35%</td></tr>
+          <tr><td>Magnet feels weak</td><td>Bigger catch radius, or faster Pulse cooldown</td></tr>
+          <tr><td>Rounds feel long</td><td>3:00 → 2:30, and spawn the World Relic at 60s</td></tr>
+          <tr><td>Players stop returning</td><td>Raise offline cap (8h → 12h) or add a daily crate</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="warn" style="margin-top:20px">
+      <b>One line to keep in mind through the whole build:</b> the monster pulls, and your greed decides whether you
+      escape. If a feature doesn't make that decision harder or more interesting, cut it.
+    </div>
+  </section>
+
+  <footer>
+    THE MAGNET · concept v1 · 2026 — single-file design document. All numbers are starting points, not promises.
+  </footer>
+
+</div>
+</body>
+</html>
